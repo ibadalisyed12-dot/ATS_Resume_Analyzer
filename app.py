@@ -31,11 +31,26 @@ st.set_page_config(
 # Helpers
 # --------------------------------------------------------------------------
 
+import os
+
+# --------------------------------------------------------------------------
+# Backend Gemini API key
+# --------------------------------------------------------------------------
+# Set your key here (or, better, set the GEMINI_API_KEY environment
+# variable / Streamlit secret so it isn't hardcoded in source control).
+GEMINI_API_KEY = "PASTE_YOUR_GEMINI_API_KEY_HERE"
+
+
 def get_api_key() -> str | None:
-    """Get the Gemini API key from Streamlit secrets, env, or user input."""
-    key = st.session_state.get("api_key")
-    if key:
-        return key
+    """Get the Gemini API key from a backend source (no user input needed)."""
+    # 1. Hardcoded constant above
+    if GEMINI_API_KEY and GEMINI_API_KEY != "PASTE_YOUR_GEMINI_API_KEY_HERE":
+        return GEMINI_API_KEY
+    # 2. Environment variable
+    env_key = os.environ.get("GEMINI_API_KEY")
+    if env_key:
+        return env_key
+    # 3. Streamlit secrets (secrets.toml or Streamlit Cloud "Secrets")
     try:
         return st.secrets["GEMINI_API_KEY"]
     except Exception:
@@ -187,19 +202,6 @@ def render_results(data: dict):
 with st.sidebar:
     st.header("⚙️ Settings")
 
-    existing_key = get_api_key()
-    if not existing_key:
-        user_key = st.text_input(
-            "Gemini API Key",
-            type="password",
-            help="Get a free key at https://aistudio.google.com/app/apikey. "
-            "For deployment, set it as a Streamlit secret instead (GEMINI_API_KEY).",
-        )
-        if user_key:
-            st.session_state["api_key"] = user_key
-    else:
-        st.success("API key loaded ✅")
-
     model_name = st.selectbox(
         "Model",
         ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-flash-latest"],
@@ -241,7 +243,7 @@ if analyze_clicked:
     if not uploaded_file:
         st.warning("Please upload a resume PDF first.")
     elif not api_key:
-        st.warning("Please enter your Gemini API key in the sidebar.")
+        st.error("Gemini API key is not configured on the backend. Set GEMINI_API_KEY.")
     else:
         try:
             with st.spinner("Extracting text from PDF..."):
