@@ -36,21 +36,21 @@ import os
 # --------------------------------------------------------------------------
 # Backend Gemini API key
 # --------------------------------------------------------------------------
-# Set your key here (or, better, set the GEMINI_API_KEY environment
-# variable / Streamlit secret so it isn't hardcoded in source control).
-GEMINI_API_KEY = "AQ.Ab8RN6K3O-PT97uL5owfc1jPUn9oxJaccUSzi8ne5gaT_GAaXQ"
+# Never hardcode a real key in this file — it gets pushed to GitHub and
+# would be visible to anyone who views the repo. Set the key via an
+# environment variable or Streamlit secret instead (see get_api_key()
+# below and .streamlit/secrets.toml.example).
 
 
 def get_api_key() -> str | None:
     """Get the Gemini API key from a backend source (no user input needed)."""
-    # 1. Hardcoded constant above
-    if GEMINI_API_KEY and GEMINI_API_KEY != "PASTE_YOUR_GEMINI_API_KEY_HERE":
-        return GEMINI_API_KEY
-    # 2. Environment variable
+    # 1. Environment variable (e.g. `export GEMINI_API_KEY=...` locally,
+    #    or set in your hosting provider's environment settings)
     env_key = os.environ.get("GEMINI_API_KEY")
     if env_key:
         return env_key
-    # 3. Streamlit secrets (secrets.toml or Streamlit Cloud "Secrets")
+    # 2. Streamlit secrets (.streamlit/secrets.toml locally — gitignored —
+    #    or the "Secrets" panel in Streamlit Community Cloud)
     try:
         return st.secrets["GEMINI_API_KEY"]
     except Exception:
