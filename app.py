@@ -38,7 +38,7 @@ import os
 # --------------------------------------------------------------------------
 # Set your key here (or, better, set the GEMINI_API_KEY environment
 # variable / Streamlit secret so it isn't hardcoded in source control).
-GEMINI_API_KEY = "PASTE_YOUR_GEMINI_API_KEY_HERE"
+GEMINI_API_KEY = "AQ.Ab8RN6K3O-PT97uL5owfc1jPUn9oxJaccUSzi8ne5gaT_GAaXQ"
 
 
 def get_api_key() -> str | None:
